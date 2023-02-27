@@ -2,8 +2,19 @@ import time
 import phue
 import audioplayer
 
+#if file bridgeIp is empty, get bridge ip and store in file
+try:
+    with open('bridgeIp.txt', 'r') as f:
+        if f.read() == '':
+            bridgeIp = str(input('Enter bridge ip: '))
+            with open('bridgeIp.txt', 'w') as f:
+                f.write(bridgeIp)
+except:
+    print("Err")
+    exit(1)
+
 # Connect to the bridge
-b = phue.Bridge('192.168.0.3')
+b = phue.Bridge(bridgeIp)
 
 # If the app is not registered and the button is not pressed, press the button and call connect() (this only needs to be run a single time)
 b.connect()
