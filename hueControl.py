@@ -70,11 +70,13 @@ class hueControl:
             time.sleep(60/(tempo*tempoChange))
     
     def syncedColorShow(heatspots):
+        print("Time lol ", Player.getPlaybackTime)
         for heatspot in heatspots:
             heatspot = round(heatspot)
-        if Player.getPlaybackTime == int(heatspot):
-            print("Synced color show heatspot: " + str(heatspot))
-            for light in lightarr:
-                lightarr[light].brightness = 255
-                lightarr[light].transitiontime = 0
-                lightarr[light].xy = converter.get_random_xy_color()
+            if Player.getPlaybackTime == int(heatspot):
+                for light in lightarr:
+                    print("Synced a heatspot")
+                    lightarr[light].brightness = 255
+                    lightarr[light].transitiontime = 0
+                    lightarr[light].xy = converter.hex_to_xy('0000ff')
+                    time.sleep(0.1)

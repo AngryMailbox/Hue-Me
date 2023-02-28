@@ -78,4 +78,11 @@ class Player:
 
             #Identify the heatspots by finding the frames with the highest spectral flux values
             heatspots = librosa.util.peak_pick(spec_flux, pre_max=3, post_max=3, pre_avg=3, post_avg=5, delta=0.2, wait=10)
-            return librosa.frames_to_time(heatspots, sr=sr)
+            heatspots = librosa.frames_to_time(heatspots, sr=sr)
+            
+            
+            #round the heatspots to the nearest second
+            for i in range(len(heatspots)):
+                heatspots[i] = round(heatspots[i])
+            print("Heatspots: ", heatspots, "\n")
+            return heatspots
