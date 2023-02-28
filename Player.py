@@ -1,8 +1,10 @@
 import wave
+import numpy as np
 import pyaudio
 import librosa
 import math
-import threading;
+import threading
+import matplotlib.pyplot as plt
 
 
 class Player:
@@ -45,6 +47,9 @@ class Player:
     
     
     
+    def getPlaybackTime(self):
+            return (self.stream.get_time() / 1000.0 % 60.0, 2)
+    
     def getBpm(self, file_name):
         if file_name == "":
             return ""
@@ -59,3 +64,17 @@ class Player:
             #Print estimated tempo
             print("Estimated tempo: ", tempo, " BPM \n")
             return tempo
+    
+    def heatSpot(self, file_name):
+        if file_name == "":
+            return ""
+        else:
+            print("Loading audio file for heatSpot scan... \n")
+            y, sr = librosa.load(file_name)
+            print(file_name)
+            #Calculate the spectral flux for each frame of the audio
+            spec_flux = librosa.onset.onset_strength(y=y, sr=sr, lag=3, max_size=5)
+            
+            #Identify the heatspots by finding the frames with the highest spectral flux values
+            heatspots = librosa.util.peak_pick(spec_flux, pre_max=3, post_max=3, pre_avg=3, post_avg=5, delta=0.2, wait=10)
+            return librosa.frames_to_time(heatspots, sr=sr)

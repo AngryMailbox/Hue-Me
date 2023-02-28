@@ -1,5 +1,6 @@
 import math
 import time
+import librosa
 import phue
 import threading
 import random
@@ -59,10 +60,20 @@ class hueControl:
             lightarr[light].transitiontime = xtrans
             lightarr[light].xy = xcolor
 
-    def randomColorShow(self, lampor, tempo):
+    def randomColorShow(self, lampor, tempo, filepath):
         while True:
+            hueControl.syncedColorShow(filepath, lampor)
             bri = random.randint(100, 254)
             tempoChange = random.randint(1, 2)
             xtrans = random.randint(1, 5)
             hueControl.setLight(lampor, bri, converter.get_random_xy_color(), xtrans)
             time.sleep(60/(tempo*tempoChange))
+    
+    def syncedColorShow(heatspots):
+        Player.heatSpot(heatspots)
+        for light in lightarr:
+            lightarr[light].on = True
+            lightarr[light].brightness = 254
+            lightarr[light].transitiontime = 0
+            lightarr[light].xy = converter.get_random_xy_color()
+        time.sleep(0.5)
