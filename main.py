@@ -30,12 +30,8 @@ def main():
 
     #make the window
     window = tk.Tk()
-    window.title("Hue Controller")
+    window.title("Hue Me")
     window.geometry("600x600")
-
-    #make start visuals button
-    startVisualsButton = tk.Button(window, text="Start Visuals", command=hue.randomColorShow(lightarr, player.getBpm(filepath)))
-    startVisualsButton.pack()
         
 
     #make select song button
@@ -46,13 +42,10 @@ def main():
     playButton = tk.Button(window, text="Play", command=t.start)
     playButton.pack()
 
-    #make stop button
-    stopButton = tk.Button(window, text="Stop", command=player.stop_audio_file)
-    stopButton.pack()
-
     #make quit button
-    quitButton = tk.Button(window, text="Quit", command=quit)
-    quitButton.pack()
+    stopButton = tk.Button(window, text="Quit (double click)", command=player.stop_audio_file)
+    stopButton.pack()
+    
     
 
     #make bpm label and update it every second
@@ -72,6 +65,18 @@ def main():
         print(selectedLamps)
     lampSelector.bind("<<ListboxSelect>>", selectLamp)
 
+    #Start the visuals when something is selected and the play button is pressed
+    def startVisuals():
+        if (t.is_alive() == True and len(selectedLamps) > 0):
+            print("Visuals started")
+            hue.randomColorShow(selectedLamps, player.getBpm(filepath))
+        else:
+            print("Visuals not started")
+    
+
+    #make visualizer button
+    visualizerButton = tk.Button(window, text="Visualizer", command=startVisuals)
+    visualizerButton.pack()
 
     #pack the window
     window.mainloop()

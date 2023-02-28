@@ -10,6 +10,7 @@ converter = Converter()
 
 #sound file
 sound = "stamp.wav"
+lightarr = []
 
 class hueControl:
 
@@ -47,26 +48,21 @@ class hueControl:
     def selectLights(self):
         b = phue.Bridge(self.bridgeIp)
         lampor = b.get_light_objects('name')
+        global lightarr
+        lightarr = lampor
         #lampor = {'Vägglampa 1': lampor['Vägglampa 1'], 'Vägglampa 2': lampor['Vägglampa 2'], 'Vägglampa 3': lampor['Vägglampa 3']}
         return lampor
 
-
-    def setLight(lightarr, xbright,xcolor):
-        for light in lightarr:
+    def setLight(lampor, xbright, xcolor, xtrans):
+        for light in lampor:
             lightarr[light].brightness = xbright
+            lightarr[light].transitiontime = xtrans
             lightarr[light].xy = xcolor
 
-
     def randomColorShow(self, lampor, tempo):
-        for light in lampor:
-            newlightarr = {light: lampor[light]}
-        try:
-            while True:
-                bri = random.randint(100, 254)
-                tempoChange = random.randint(1, 2)
-                hueControl.setLight(newlightarr, bri, converter.get_random_xy_color())
-                time.sleep(60/(tempo*tempoChange))
-                if not Player.getAudioPlaying():
-                    break
-        except:
-            print("lights turned off")
+        while True:
+            bri = random.randint(100, 254)
+            tempoChange = random.randint(1, 2)
+            xtrans = random.randint(1, 5)
+            hueControl.setLight(lampor, bri, converter.get_random_xy_color(), xtrans)
+            time.sleep(60/(tempo*tempoChange))
