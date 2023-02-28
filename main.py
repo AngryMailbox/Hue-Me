@@ -21,7 +21,7 @@ def selectAudioFile():
 def main():
     hue = hueControl()
     player = Player()
-    print(player.heatSpot(filepath))
+    #print(player.heatSpot(filepath))
     
 
     #exec def connect in hueControl
@@ -49,7 +49,7 @@ def main():
     
     
 
-    #make bpm label and update it every second
+    #make bpm label
     bpmLabel = tk.Label(window, text="BPM: " + str(player.getBpm(filepath)))
     bpmLabel.pack()
 
@@ -68,9 +68,11 @@ def main():
 
     #Start the visuals when something is selected and the play button is pressed
     def startVisuals():
+        global filepath
+        print("Visuals starting...",filepath)
         if (t.is_alive() == True and len(selectedLamps) > 0):
             print("Visuals started")
-            hue.randomColorShow(selectedLamps, player.getBpm(filepath), filepath)
+            hue.randomColorShow(selectedLamps, player.getBpm(filepath), player.heatSpot(filepath))
         else:
             print("Visuals not started")
     
@@ -80,15 +82,21 @@ def main():
     visualizerButton.pack()
 
     # make a label for playback time and update every frame
-    timeLabel = tk.Label(window, text="Time: " + str(player.getPlaybackTime()))
+    timeLabel = tk.Label(window, text="Time: " + str(0))
     timeLabel.pack()
+
     # update every frame
     def update():
+        #print("Time: ", int(player.getPlaybackTime()))
         timeLabel.config(text="Time: " + str(player.getPlaybackTime()))
-        window.after(1, update)
-    update()
 
-    #pack the window
+        # start the update loop
+        window.after(1, update)
+
+    # start the update loop
+    window.after(1, update)
+
+    # pack the window
     window.mainloop()
 
 

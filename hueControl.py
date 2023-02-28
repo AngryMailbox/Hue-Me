@@ -60,9 +60,9 @@ class hueControl:
             lightarr[light].transitiontime = xtrans
             lightarr[light].xy = xcolor
 
-    def randomColorShow(self, lampor, tempo, filepath):
+    def randomColorShow(self, lampor, tempo, heatspots):
         while True:
-            hueControl.syncedColorShow(filepath, lampor)
+            hueControl.syncedColorShow(heatspots)
             bri = random.randint(100, 254)
             tempoChange = random.randint(1, 2)
             xtrans = random.randint(1, 5)
@@ -70,10 +70,11 @@ class hueControl:
             time.sleep(60/(tempo*tempoChange))
     
     def syncedColorShow(heatspots):
-        Player.heatSpot(heatspots)
-        for light in lightarr:
-            lightarr[light].on = True
-            lightarr[light].brightness = 254
-            lightarr[light].transitiontime = 0
-            lightarr[light].xy = converter.get_random_xy_color()
-        time.sleep(0.5)
+        for heatspot in heatspots:
+            heatspot = round(heatspot)
+        if Player.getPlaybackTime == int(heatspot):
+            print("Synced color show heatspot: " + str(heatspot))
+            for light in lightarr:
+                lightarr[light].brightness = 255
+                lightarr[light].transitiontime = 0
+                lightarr[light].xy = converter.get_random_xy_color()
