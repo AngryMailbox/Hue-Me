@@ -1,9 +1,17 @@
+import math
 import time
 import phue
-from audioplayer import AudioPlayer
+import threading
 import librosa
-import numpy
-#import tempocnn
+import random
+from rgbxy import Converter
+from Player import Player
+converter = Converter()
+
+sound = "stamp.wav"
+
+
+
 
 
 #if file bridgeIp is empty, get bridge ip and store in file
@@ -38,30 +46,53 @@ with open('userId.txt', 'w') as f:
     f.write(b.username)
 
 # Get list of lamp objects
-b.get_light_objects('id')
-print(b.get_light_objects('id'))
+#b.get_light_objects('id')
 
-#turns on "Vägglampa 1"
-b.set_light('Vägglampa 1', 'on', True)
+# Get lamp object
+lampor = b.get_light_objects('name')
 
-#plays audio from "metro.mp3"
-AudioPlayer("metro.mp3").play(block=True)
+# Choose 'Vägglampa 1' lamp to use and put in a new array
+#lampor = {'Vägglampa 1': testlampa['Vägglampa 1']}
+# Choose 'Vägglampa 1', 'Vägglampa 2' lamps to use and put in a new array
+lampor = {'Vägglampa 1': lampor['Vägglampa 1'], 'Vägglampa 2': lampor['Vägglampa 2'], 'Vägglampa 3': lampor['Vägglampa 3']}
 
-y, sr = librosa.load("metro.mp3")
-tempo, beats = librosa.beat.beat_track(y=y, sr=sr)
-print("Estimated tempo: {:.2f} BPM".format(tempo))
+for light in lampor:
+    lampor[light].on = True 
+
+
+def setLight(lightarr, xbright,xcolor):
+    for light in lightarr:
+        lightarr[light].brightness = xbright
+        lightarr[light].xy = xcolor
+
+
+#Load audio file
+y, sr = librosa.load(sound)
+
+#Detect tempo and beats
+tempo, beat_frames = librosa.beat.beat_track(y=y, sr=sr)
+
+#Print estimated tempo
+print("Estimated tempo: ", tempo, " BPM")
+tempo = math.ceil(tempo)
+
+
+#play audio file in multithreading
+player = Player()
+t = threading.Thread(target=player.play_audio_file, args=(sound,))
+t.start()
 
 #blink light at tempo
 try:
     while True:
-        b.set_light('Vägglampa 1', 'on', True)
-        print("on")
-        time.sleep(60/tempo)
-        b.set_light('Vägglampa 1', 'on', False)
-        print("off")
-        time.sleep(60/tempo)
-#if keyboard interrupt, turn off light and exit
-except:
-    b.set_light('Vägglampa 1', 'on', False)
+        bri = random.randint(100, 254)
+        tempoChange = random.randint(1, 2)
+        setLight(lampor, bri, converter.get_random_xy_color())
+        time.sleep(60/(tempo*tempoChange))
+        if not player.audioPlaying():
+            exit()
 
-exit()
+#if keyboard interrupt, turn off light and exit
+except KeyboardInterrupt:
+    b.set_light('Vägglampa 1', 'on', False)
+    exit()
