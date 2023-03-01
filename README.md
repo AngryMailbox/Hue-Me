@@ -22,8 +22,7 @@ pip install -r requirements.txt
 The repository contains the following files:
 
 * `Player.py`: A Python module that handles audio playback using the PyAudio library
-* `hueControl.py`: A Python module that handles the communication with the Philips Hue bridge and the Zigbee devices
-* `*.wav`: Example audio files used to test the project
+* `hueControl.py`: A Python class that contains some functions from the pHue package and handles communications with Hue bridge.
 * `main.py`: The main Python script that runs the project
 * `requirements.txt`: A text file that lists the dependencies required to run the project
 
