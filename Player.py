@@ -77,7 +77,18 @@ class Player:
             spec_flux = librosa.onset.onset_strength(y=y, sr=sr, lag=3, max_size=5)
 
             #Identify the heatspots by finding the frames with the highest spectral flux values
-            heatspots = librosa.util.peak_pick(spec_flux, pre_max=3, post_max=3, pre_avg=3, post_avg=5, delta=0.2, wait=10)
+            # pre_max = number of samples that must be below the threshold before a peak is detected.
+
+            # post_max = number of samples that must be below the threshold after a peak is detected.
+
+            # pre_avg = the number of samples that must be below the average before a peak is detected.
+
+            # post_avg = the number of samples that must be below the average after a peak is detected.
+
+            # delta = a float that specifies the minimum amplitude of the peak in relation to the surrounding samples.
+
+            # wait = an integer that specifies the minimum number of samples between two detected peaks.
+            heatspots = librosa.util.peak_pick(spec_flux, pre_max=160, post_max=105, pre_avg=150, post_avg=250, delta=2.0, wait=90)
             heatspots = librosa.frames_to_time(heatspots, sr=sr)
             
             

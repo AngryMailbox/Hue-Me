@@ -62,21 +62,24 @@ class hueControl:
 
     def randomColorShow(self, lampor, tempo, heatspots):
         while True:
-            hueControl.syncedColorShow(heatspots)
+            hueControl.syncedColorShow(heatspots, lampor)
             bri = random.randint(100, 254)
             tempoChange = random.randint(1, 2)
             xtrans = random.randint(1, 5)
             hueControl.setLight(lampor, bri, converter.get_random_xy_color(), xtrans)
             time.sleep(60/(tempo*tempoChange))
     
-    def syncedColorShow(heatspots):
-        print("Time lol ", Player.getPlaybackTime)
+    def syncedColorShow(heatspots, lampor):
         for heatspot in heatspots:
             heatspot = round(heatspot)
-            if Player.getPlaybackTime == int(heatspot):
-                for light in lightarr:
-                    print("Synced a heatspot")
+            if Player.getPlaybackTime(0)+1 == int(heatspot):
+                for light in lampor:
                     lightarr[light].brightness = 255
-                    lightarr[light].transitiontime = 0
-                    lightarr[light].xy = converter.hex_to_xy('0000ff')
                     time.sleep(0.1)
+                    lightarr[light].transitiontime = 0
+                    lightarr[light].xy = converter.hex_to_xy('ffffff')
+                    time.sleep(0.1)
+                    lightarr[light].brightness = 100
+                    lightarr[light].xy = converter.hex_to_xy('a020f0')
+                    time.sleep(0.1)
+                    lightarr[light].brightness = 255
