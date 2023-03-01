@@ -14,9 +14,9 @@ To run the project, you will need to install the following dependencies:
 * The `requirements.txt` file included in the repository
 
 You can install the dependencies by running the following command:
-
+~~~bash
 pip install -r requirements.txt
-
+~~~
 ## Files
 
 The repository contains the following files:
@@ -30,9 +30,9 @@ The repository contains the following files:
 ## Usage
 
 To use the project, you can run the `main.py` script with the following command:
-
+~~~bash
 python main.py
-
+~~~
 After prompting for The script will start playing a .wav file of your choice and you can start synchronizing the lights with the music. For now, you can adjust different light modes by editing the `main.py` file.
 
 ## Contribution
