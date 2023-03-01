@@ -68,6 +68,13 @@ class hueControl:
             xtrans = random.randint(1, 5)
             hueControl.setLight(lampor, bri, converter.get_random_xy_color(), xtrans)
             time.sleep(60/(tempo*tempoChange))
+
+    def strobe(self, lampor, tempo):
+        while True:
+            hueControl.setLight(lampor, 254, converter.hex_to_xy('ffffff'), 0)
+            time.sleep(15/tempo)
+            hueControl.setLight(lampor, 0, converter.hex_to_xy('ffffff'), 0)
+            time.sleep(30/tempo)
     
     def syncedColorShow(heatspots, lampor):
         for heatspot in heatspots:

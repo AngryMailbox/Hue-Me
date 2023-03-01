@@ -1,5 +1,5 @@
 import tkinter as tk;
-from tkinter import filedialog
+from tkinter import END, filedialog
 from hueControl import hueControl;
 from Player import Player;
 import threading;
@@ -17,6 +17,9 @@ def selectAudioFile():
     filepath = filedialog.askopenfilename()
     print(filepath)
     t = threading.Thread(target=player.play_audio_file, args=(str(filepath),))
+
+def stopAudioFile():
+    player.stop_audio_file()
 
 def main():
     hue = hueControl()
@@ -44,7 +47,7 @@ def main():
     playButton.pack()
 
     #make quit button
-    stopButton = tk.Button(window, text="Quit (double click)", command=player.stop_audio_file)
+    stopButton = tk.Button(window, text="Exit", command=stopAudioFile)
     stopButton.pack()
     
     
@@ -54,29 +57,47 @@ def main():
     bpmLabel.pack()
 
     #make lamp selector that shows all the lamps from lightarr
-    lampSelector = tk.Listbox(window)
-    lampSelector.pack()
+    lampSelector = tk.Listbox(window, selectmode=tk.MULTIPLE)
+    #remove underlining of font from selected items
     for light in lightarr:
         lampSelector.insert(tk.END, light)
-
-    #check what lamps are selected and set them to the selected lamps
+    lampSelector.config(height=15)
+    lampSelector.pack()
     
+    #check what lamps are selected and set them to the selected lamps
     def selectLamp(event):
-        selectedLamps.append(lampSelector.get(lampSelector.curselection()))
-        print(selectedLamps)
+        #append only if it's not already in the list
+        try:
+            if lampSelector.get(lampSelector.curselection()) not in selectedLamps:
+                selectedLamps.append(lampSelector.get(lampSelector.curselection()))
+                lampSelector.itemconfig(lampSelector.curselection(), bg="green")
+            else:
+                selectedLamps.remove(lampSelector.get(lampSelector.curselection()))
+                lampSelector.itemconfig(lampSelector.curselection(), bg="white")
+            print(selectedLamps)
+            lampSelector.selection_clear(0,END)
+            lampSelector.activate(lampSelector.curselection())
+        except:
+            None
     lampSelector.bind("<<ListboxSelect>>", selectLamp)
 
     #Start the visuals when something is selected and the play button is pressed
     def startVisuals():
         global filepath
-        print("Visuals starting...",filepath)
         if (t.is_alive() == True and len(selectedLamps) > 0):
-            print("Visuals started")
             a = threading.Thread(target=hue.randomColorShow, args=(selectedLamps, player.getBpm(filepath), player.heatSpot(filepath)))
             a.start()
         else:
-            print("Visuals not started")
+            print("Err: Visuals not started")
     
+
+    def startStrobe():
+        global filepath
+        if (t.is_alive() == True and len(selectedLamps) > 0):
+            a = threading.Thread(target=hue.strobe, args=(selectedLamps, player.getBpm(filepath)))
+            a.start()
+        else:
+            print("Err: Visuals not started")
 
     #make visualizer button
     visualizerButton = tk.Button(window, text="Visualizer", command=startVisuals)
@@ -85,6 +106,10 @@ def main():
     # make a label for playback time and update every frame
     timeLabel = tk.Label(window, text="Time: " + str(0))
     timeLabel.pack()
+
+    # Start strobe
+    strobeButton = tk.Button(window, text="Strobe", command=startStrobe)
+    strobeButton.pack()
 
     # update every frame
     def update():

@@ -1,9 +1,12 @@
+from os import path
 import wave
 import numpy as np
 import pyaudio
 import librosa
 import math
 import matplotlib.pyplot as plt
+import pydub
+import AudioConverter
 
 elapsed_time = 0
 
@@ -19,7 +22,10 @@ class Player:
         if file_name == '':
             print("No audio file selected")
             return
-
+        
+        else:
+            #Convert audio file to .wav
+            None
         try:
             print("Playing audio file... \n")
             chunk = 1024
@@ -59,19 +65,18 @@ class Player:
         if file_name == "":
             return ""
         else:
-            print("Loading audio file for BPM scan... \n")
             y, sr = librosa.load(file_name)
             #Detect tempo and beats
             tempo, beat_frames = librosa.beat.beat_track(y=y, sr=sr)
             tempo = math.ceil(tempo)
-            print("Estimated tempo: ", tempo, " BPM \n")
+            print(tempo, "BPM")
             return tempo
 
     def heatSpot(self, file_name):
         if file_name == "":
             return ""
         else:
-            print("Loading audio file for heatSpot scan... \n")
+            #Load the audio file for heatspot detection
             y, sr = librosa.load(file_name)
             #Calculate the spectral flux for each frame of the audio
             spec_flux = librosa.onset.onset_strength(y=y, sr=sr, lag=3, max_size=5)
