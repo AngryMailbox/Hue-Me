@@ -69,6 +69,16 @@ class hueControl:
             hueControl.setLight(lampor, bri, converter.get_random_xy_color(), xtrans)
             time.sleep(60/(tempo*tempoChange))
 
+    def threadedRandomColorShow(self, lampor, tempo, heatspots):
+        # Create a thread for each light
+        threads = []
+        for light in lampor:
+            lightarr = []
+            lightarr.append(light)
+            t = threading.Thread(target=hueControl.randomColorShow, args=(self, lightarr, tempo, heatspots))
+            threads.append(t)
+            t.start()
+
     def strobe(self, lampor, tempo):
         while True:
             hueControl.setLight(lampor, 254, converter.hex_to_xy('ffffff'), 0)

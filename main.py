@@ -85,7 +85,7 @@ def main():
     def startVisuals():
         global filepath
         if (t.is_alive() == True and len(selectedLamps) > 0):
-            a = threading.Thread(target=hue.randomColorShow, args=(selectedLamps, player.getBpm(filepath), player.heatSpot(filepath)))
+            a = threading.Thread(target=hue.threadedRandomColorShow, args=(selectedLamps, player.getBpm(filepath), player.heatSpot(filepath)))
             a.start()
         else:
             print("Err: Visuals not started")
