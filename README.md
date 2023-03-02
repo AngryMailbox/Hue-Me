@@ -40,4 +40,4 @@ Contributions to the project are welcome. You can create a pull request or open 
 
 ## License
 
-This project is licensed under the MIT License. See the `LICENSE` file for more information.
+This project is unlicensed
